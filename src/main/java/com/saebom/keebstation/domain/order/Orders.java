@@ -44,4 +44,9 @@ public class Orders extends BaseTimeEntity {
         this.status = OrderStatus.PAID;
     }
 
+    public void applyTotalPrice(long totalPrice) {
+        if (totalPrice < 0) throw new IllegalArgumentException("totalPrice must be >= 0");
+        this.totalPrice = totalPrice;
+    }
+
 }
