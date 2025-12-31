@@ -78,9 +78,26 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void cancelOrder(Long orderId) {
+
+        if (orderId == null) throw new IllegalArgumentException("orderId는 필수입니다.");
+
         Orders order = ordersRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("주문이 존재하지 않습니다. orderId=" + orderId));
+
         order.cancel();
+
+        List<OrderLine> lines = orderLineRepository.findByOrderId(orderId);
+
+        for (OrderLine line : lines) {
+            Long optionId = line.getProductOption().getId();
+            int quantity = line.getQuantity();
+
+            Stock stock = stockRepository.findByProductOptionId(optionId)
+                    .orElseThrow(() -> new EntityNotFoundException("재고가 존재하지 않습니다. optionId=" + optionId));
+
+            stock.increase(quantity);
+
+        }
     }
 
     @Override
