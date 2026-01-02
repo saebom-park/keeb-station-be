@@ -2,6 +2,9 @@ package com.saebom.keebstation.domain.order;
 
 import com.saebom.keebstation.domain.option.ProductOption;
 import com.saebom.keebstation.domain.option.ProductOptionRepository;
+import com.saebom.keebstation.domain.payment.PaymentMethod;
+import com.saebom.keebstation.domain.payment.PaymentRepository;
+import com.saebom.keebstation.domain.payment.PaymentService;
 import com.saebom.keebstation.domain.stock.Stock;
 import com.saebom.keebstation.domain.stock.StockRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,6 +19,9 @@ class OrderCancelStockRestoreTest {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @Autowired
     private OrdersRepository ordersRepository;
@@ -78,8 +84,8 @@ class OrderCancelStockRestoreTest {
         Orders order = ordersRepository.save(new Orders(memberId, 0L));
         orderLineRepository.save(new OrderLine(order, option, 1000L, 2));
 
-        // 주문을 결제 상태로 전이 (CREATED -> PAID)
-        orderService.payOrder(order.getId());
+        // 주문을 결제 상태로 전이 (Payment 도메인 사용)
+        paymentService.pay(order.getId(), 2000L, PaymentMethod.CARD);
 
         // when / then
         assertThatThrownBy(() -> orderService.cancelOrder(order.getId()))
