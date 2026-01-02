@@ -102,14 +102,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void payOrder(Long orderId) {
-        Orders order = ordersRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("주문이 존재하지 않습니다. orderId=" + orderId));
-        order.markPaid();
-    }
-
-    @Override
-    @Transactional
     public void shipOrder(Long orderId) {
         Orders order = ordersRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("주문이 존재하지 않습니다. orderId=" + orderId));

@@ -25,12 +25,6 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{orderId}/pay")
-    public ResponseEntity<Void> pay(@PathVariable("orderId") Long orderId) {
-        orderService.payOrder(orderId);
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping("/{orderId}/ship")
     public ResponseEntity<Void> ship(@PathVariable("orderId") Long orderId) {
         orderService.shipOrder(orderId);
