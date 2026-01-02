@@ -24,6 +24,7 @@
 - `member (1) ── (N) orders` *(초기 단계에서는 FK만 가정)*
 - `orders (1) ── (N) order_line`
 - `order_line (N) ── (1) product_option`
+- `orders (1) ── (N) payment`
 
 ---
 
@@ -153,12 +154,34 @@
 
 ---
 
+### 2.7 `payment` (결제)
+
+> 주문에 대한 결제 이력을 관리한다.  
+> 현재는 내부 시뮬레이션 단계이며, 외부 PG 연동을 고려한 확장 구조를 유지한다.
+
+| 컬럼명 | 타입 | 제약조건 | 설명 |
+|---|---|---|---|
+| payment_id | BIGINT | PK, Auto Increment | 결제 ID |
+| order_id | BIGINT | FK (`orders.order_id`) | 주문 ID |
+| amount | BIGINT | NOT NULL | 결제 금액 |
+| method | VARCHAR(20) | NOT NULL | 결제 수단 (`CARD`, `ACCOUNT` 등) |
+| status | VARCHAR(20) | NOT NULL | 결제 상태 (`READY`, `SUCCESS`, `FAILED`) |
+| reg_time | TIMESTAMP | NOT NULL | 생성 시각 |
+| update_time | TIMESTAMP | NOT NULL | 수정 시각 |
+
+권장 인덱스:
+- `idx_payment_order_id (order_id)`
+
+---
+
 ## 3. Enum 정의 (문서 기준)
 
 - `CategoryName`: `KEYBOARD`, `KEYCAP`, `SWITCH`, `ACCESSORY`
 - `ProductStatus`: `ACTIVE`, `INACTIVE`
 - `ProductOptionStatus`: `AVAILABLE`, `DISABLED`
 - `OrderStatus`: `CREATED`, `PAID`, `CANCELED`
+- `PaymentStatus`: `READY`, `SUCCESS`, `FAILED`
+- `PaymentMethod`: `CARD`, `ACCOUNT`
 
 ---
 

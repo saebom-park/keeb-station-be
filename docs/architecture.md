@@ -32,6 +32,7 @@ com.saebom.keebstation
  │   ├─ option
  │   ├─ stock
  │   ├─ order
+ │   ├─ payment
  │   └─ member
  ├─ web
  │   ├─ api
@@ -52,6 +53,9 @@ com.saebom.keebstation
 - 재고는 ProductOption : Stock = 1 : 1
 - 주문 상세(OrderLine)는 ProductOption을 참조
 - Admin 기능은 별도 도메인이 아닌 접근 주체(Role) 기준으로 분리
+- 결제(Payment)는 주문(Order)과 분리된 독립 도메인
+- Order는 상태 전이만 책임 (CREATED → PAID → ...)
+- PaymentService를 통해서만 PAID 상태로 전이 가능
 
 ---
 
@@ -63,6 +67,17 @@ com.saebom.keebstation
 - Order / OrderLine 생성
 - 총 금액 확정
 - 실패 시 전체 롤백 (재고 차감 포함)
+
+---
+
+## 주문 결제 트랜잭션 흐름
+
+- Controller → PaymentService (@Transactional)
+- Orders 조회
+- 결제 금액 검증 (order.totalPrice == amount)
+- 중복 결제 방지
+- Payment 생성 및 성공 처리
+- Orders 상태를 PAID로 전이
 
 ---
 
