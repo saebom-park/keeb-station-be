@@ -81,8 +81,11 @@ class OrderCancelStockRestoreTest {
 
         int beforeQty = stock.getQuantity();
 
-        Orders order = ordersRepository.save(new Orders(memberId, 0L));
+        Orders order = ordersRepository.save(new Orders(memberId, 2000L));
         orderLineRepository.save(new OrderLine(order, option, 1000L, 2));
+
+        // 총액 확정
+        order.applyTotalPrice(2000L);
 
         // 주문을 결제 상태로 전이 (Payment 도메인 사용)
         paymentService.pay(order.getId(), 2000L, PaymentMethod.CARD);
