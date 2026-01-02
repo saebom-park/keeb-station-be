@@ -1,6 +1,6 @@
 package com.saebom.keebstation.domain.payment;
 
-import com.saebom.keebstation.domain.order.Orders;
+import com.saebom.keebstation.domain.order.Order;
 import com.saebom.keebstation.global.common.jpa.BaseTimeEntity;
 
 import jakarta.persistence.*;
@@ -24,7 +24,7 @@ public class Payment extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_id", nullable = false)
-    private Orders order;
+    private Order order;
 
     @Column(name = "amount", nullable = false)
     private long amount;
@@ -37,7 +37,7 @@ public class Payment extends BaseTimeEntity {
     @Column(name = "method", nullable = false, columnDefinition = "varchar(20)")
     private PaymentMethod method;
 
-    public Payment(Orders order, long amount, PaymentMethod method) {
+    public Payment(Order order, long amount, PaymentMethod method) {
         if (order == null) throw new IllegalArgumentException("order는 필수입니다.");
         if (amount <= 0) throw new IllegalArgumentException("amount는 1 이상이어야 합니다.");
         if (method == null) throw new IllegalArgumentException("method는 필수입니다.");

@@ -1,7 +1,7 @@
 package com.saebom.keebstation.domain.payment;
 
-import com.saebom.keebstation.domain.order.Orders;
-import com.saebom.keebstation.domain.order.OrdersRepository;
+import com.saebom.keebstation.domain.order.Order;
+import com.saebom.keebstation.domain.order.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,12 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final OrdersRepository ordersRepository;
+    private final OrderRepository orderRepository;
 
     public PaymentServiceImpl(PaymentRepository paymentRepository,
-                              OrdersRepository ordersRepository) {
+                              OrderRepository orderRepository) {
         this.paymentRepository = paymentRepository;
-        this.ordersRepository = ordersRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (amount <= 0) throw new IllegalArgumentException("amount는 1 이상이어야 합니다.");
         if (method == null) throw new IllegalArgumentException("paymentMethod는 필수입니다.");
 
-        Orders order = ordersRepository.findById(orderId)
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("주문이 존재하지 않습니다. orderId=" + orderId));
 
         // 이미 성공한 결제가 있으면 차단

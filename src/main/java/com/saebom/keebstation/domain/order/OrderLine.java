@@ -22,7 +22,7 @@ public class OrderLine extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_id", nullable = false)
-    private Orders order;
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_option_id", nullable = false)
@@ -37,7 +37,7 @@ public class OrderLine extends BaseTimeEntity {
     @Column(name = "line_amount", nullable = false)
     private long lineAmount;
 
-    public OrderLine(Orders order, ProductOption productOption, long unitPrice, int quantity) {
+    public OrderLine(Order order, ProductOption productOption, long unitPrice, int quantity) {
         this.order = order;
         this.productOption = productOption;
         this.unitPrice = unitPrice;

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
         @Index(name = "idx_orders_member_id", columnList = "member_id"),
         @Index(name = "idx_orders_reg_time", columnList = "reg_time")
 })
-public class Orders extends BaseTimeEntity {
+public class Order extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class Orders extends BaseTimeEntity {
     @Column(name = "total_price", nullable = false)
     private long totalPrice;
 
-    public Orders(Long memberId, long totalPrice) {
+    public Order(Long memberId, long totalPrice) {
         this.memberId = memberId;
         this.totalPrice = totalPrice;
         this.status = OrderStatus.CREATED;

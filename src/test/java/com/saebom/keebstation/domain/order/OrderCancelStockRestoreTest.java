@@ -3,7 +3,6 @@ package com.saebom.keebstation.domain.order;
 import com.saebom.keebstation.domain.option.ProductOption;
 import com.saebom.keebstation.domain.option.ProductOptionRepository;
 import com.saebom.keebstation.domain.payment.PaymentMethod;
-import com.saebom.keebstation.domain.payment.PaymentRepository;
 import com.saebom.keebstation.domain.payment.PaymentService;
 import com.saebom.keebstation.domain.stock.Stock;
 import com.saebom.keebstation.domain.stock.StockRepository;
@@ -24,7 +23,7 @@ class OrderCancelStockRestoreTest {
     private PaymentService paymentService;
 
     @Autowired
-    private OrdersRepository ordersRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
     private OrderLineRepository orderLineRepository;
@@ -51,7 +50,7 @@ class OrderCancelStockRestoreTest {
 
         int beforeQty = stock.getQuantity();
 
-        Orders order = ordersRepository.save(new Orders(memberId, 0L));
+        Order order = orderRepository.save(new Order(memberId, 0L));
         orderLineRepository.save(new OrderLine(order, option, 1000L, 2)); // quantity=2
 
         // when
@@ -63,7 +62,7 @@ class OrderCancelStockRestoreTest {
 
         assertThat(after.getQuantity()).isEqualTo(beforeQty + 2);
 
-        Orders reloaded = ordersRepository.findById(order.getId()).orElseThrow();
+        Order reloaded = orderRepository.findById(order.getId()).orElseThrow();
         assertThat(reloaded.getStatus()).isEqualTo(OrderStatus.CANCELED);
     }
 
@@ -81,7 +80,7 @@ class OrderCancelStockRestoreTest {
 
         int beforeQty = stock.getQuantity();
 
-        Orders order = ordersRepository.save(new Orders(memberId, 2000L));
+        Order order = orderRepository.save(new Order(memberId, 2000L));
         orderLineRepository.save(new OrderLine(order, option, 1000L, 2));
 
         // 총액 확정

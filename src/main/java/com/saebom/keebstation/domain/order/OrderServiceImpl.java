@@ -18,16 +18,16 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
 
-    private final OrdersRepository ordersRepository;
+    private final OrderRepository orderRepository;
     private final OrderLineRepository orderLineRepository;
     private final ProductOptionRepository productOptionRepository;
     private final StockRepository stockRepository;
 
-    public OrderServiceImpl(OrdersRepository ordersRepository,
+    public OrderServiceImpl(OrderRepository orderRepository,
                             OrderLineRepository orderLineRepository,
                             ProductOptionRepository productOptionRepository,
                             StockRepository stockRepository) {
-        this.ordersRepository = ordersRepository;
+        this.orderRepository = orderRepository;
         this.orderLineRepository = orderLineRepository;
         this.productOptionRepository = productOptionRepository;
         this.stockRepository = stockRepository;
@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         long totalPrice = 0L;
-        Orders order = ordersRepository.save(new Orders(memberId, 0L));
+        Order order = orderRepository.save(new Order(memberId, 0L));
 
         List<OrderLine> lines = new ArrayList<>();
 
@@ -81,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
 
         if (orderId == null) throw new IllegalArgumentException("orderId는 필수입니다.");
 
-        Orders order = ordersRepository.findById(orderId)
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("주문이 존재하지 않습니다. orderId=" + orderId));
 
         order.cancel();
@@ -103,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void shipOrder(Long orderId) {
-        Orders order = ordersRepository.findById(orderId)
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("주문이 존재하지 않습니다. orderId=" + orderId));
         order.ship();
     }
