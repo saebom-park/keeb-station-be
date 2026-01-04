@@ -39,7 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new IllegalArgumentException("결제 금액이 주문 금액과 일치하지 않습니다.");
         }
 
-        Payment payment = new Payment(order, amount, method);
+        Payment payment = Payment.ready(order, amount, method);
         paymentRepository.save(payment);
 
         // 내부 시뮬레이션: 지금은 무조건 성공

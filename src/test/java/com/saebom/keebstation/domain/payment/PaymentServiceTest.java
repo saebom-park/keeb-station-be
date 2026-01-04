@@ -19,7 +19,7 @@ class PaymentServiceTest {
     @Test
     void 정상_결제_성공() {
         // given
-        Order order = orderRepository.save(new Order(1L, 100_000L));
+        Order order = orderRepository.save(Order.create(1L, 100_000L));
 
         // when
         paymentService.pay(order.getId(), 100_000L, PaymentMethod.CARD);
@@ -32,7 +32,7 @@ class PaymentServiceTest {
 
     @Test
     void 결제_금액이_다르면_실패() {
-        Order order = orderRepository.save(new Order(1L, 100_000L));
+        Order order = orderRepository.save(Order.create(1L, 100_000L));
 
         assertThatThrownBy(() ->
                 paymentService.pay(order.getId(), 90_000L, PaymentMethod.CARD)
@@ -41,7 +41,7 @@ class PaymentServiceTest {
 
     @Test
     void 이미_결제된_주문은_다시_결제_불가() {
-        Order order = orderRepository.save(new Order(1L, 100_000L));
+        Order order = orderRepository.save(Order.create(1L, 100_000L));
         paymentService.pay(order.getId(), 100_000L, PaymentMethod.CARD);
 
         assertThatThrownBy(() ->

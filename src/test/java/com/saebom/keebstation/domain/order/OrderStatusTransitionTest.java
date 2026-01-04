@@ -10,7 +10,7 @@ class OrderStatusTransitionTest {
     @Test
     void CREATED에서_PAID로_전이할수있다() {
         // given
-        Order order = new Order(1L, 0L);
+        Order order = Order.create(1L, 0L);
         assertThat(order.getStatus()).isEqualTo(OrderStatus.CREATED);
 
         // when
@@ -23,12 +23,12 @@ class OrderStatusTransitionTest {
     @Test
     void PAID에서_SHIPPED로_전이할수있다() {
         // given
-        Order order = new Order(1L, 0L);
+        Order order = Order.create(1L, 0L);
         order.markPaid();
         assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
 
         // when
-        order.ship();
+        order.startShipping();
 
         // then
         assertThat(order.getStatus()).isEqualTo(OrderStatus.SHIPPED);
@@ -37,11 +37,11 @@ class OrderStatusTransitionTest {
     @Test
     void CREATED에서_SHIPPED로_바로_전이하면_예외가_발생한다() {
         // given
-        Order order = new Order(1L, 0L);
+        Order order = Order.create(1L, 0L);
         assertThat(order.getStatus()).isEqualTo(OrderStatus.CREATED);
 
         // when / then
-        assertThatThrownBy(order::ship)
+        assertThatThrownBy(order::startShipping)
                 .isInstanceOf(IllegalStateException.class);
     }
 }

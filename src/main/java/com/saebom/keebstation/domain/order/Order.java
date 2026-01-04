@@ -2,11 +2,12 @@ package com.saebom.keebstation.domain.order;
 
 import com.saebom.keebstation.global.common.jpa.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "orders", indexes = {
         @Index(name = "idx_orders_member_id", columnList = "member_id"),
@@ -30,10 +31,14 @@ public class Order extends BaseTimeEntity {
     @Column(name = "total_price", nullable = false)
     private long totalPrice;
 
-    public Order(Long memberId, long totalPrice) {
+    private Order(Long memberId, long totalPrice) {
         this.memberId = memberId;
         this.totalPrice = totalPrice;
         this.status = OrderStatus.CREATED;
+    }
+
+    public static Order create(Long memberId, long totalPrice) {
+        return new Order(memberId, totalPrice);
     }
 
     public void applyTotalPrice(long totalPrice) {

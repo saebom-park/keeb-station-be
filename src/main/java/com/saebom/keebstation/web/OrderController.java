@@ -26,7 +26,7 @@ public class OrderController {
     }
 
     @PostMapping("/{orderId}/cancel")
-    public ResponseEntity<Void> cancel(@PathVariable("orderId") Long orderId) {
+    public ResponseEntity<Void> cancelOrder(@PathVariable("orderId") Long orderId) {
         orderService.cancelOrder(orderId);
         return ResponseEntity.ok().build();
     }

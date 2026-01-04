@@ -50,7 +50,7 @@ class OrderCancelStockRestoreTest {
 
         int beforeQty = stock.getQuantity();
 
-        Order order = orderRepository.save(new Order(memberId, 0L));
+        Order order = orderRepository.save(Order.create(memberId, 0L));
         orderLineRepository.save(new OrderLine(order, option, 1000L, 2)); // quantity=2
 
         // when
@@ -80,7 +80,7 @@ class OrderCancelStockRestoreTest {
 
         int beforeQty = stock.getQuantity();
 
-        Order order = orderRepository.save(new Order(memberId, 2000L));
+        Order order = orderRepository.save(Order.create(memberId, 2000L));
         orderLineRepository.save(new OrderLine(order, option, 1000L, 2));
 
         // 총액 확정

@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         long totalPrice = 0L;
-        Order order = orderRepository.save(new Order(memberId, 0L));
+        Order order = orderRepository.save(Order.create(memberId, 0L));
 
         List<OrderLine> lines = new ArrayList<>();
 
