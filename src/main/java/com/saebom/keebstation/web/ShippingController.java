@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/orders/{orderId}/shipping")
+@RequestMapping("/api/orders/{orderId}/shippings")
 public class ShippingController {
 
     private final ShippingService shippingService;
