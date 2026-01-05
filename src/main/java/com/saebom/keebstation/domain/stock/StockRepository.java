@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface StockRepository extends JpaRepository<Stock, Long> {
     Optional<Stock> findByProductOptionId(Long productOptionId);
+    boolean existsByProductOptionId(Long productOptionId);
 }
