@@ -1,10 +1,14 @@
 package com.saebom.keebstation.domain.product;
 
 import com.saebom.keebstation.domain.category.Category;
+import com.saebom.keebstation.domain.option.ProductOption;
 import com.saebom.keebstation.global.common.jpa.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -36,6 +40,9 @@ public class Product extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, columnDefinition = "varchar(20)")
     private ProductStatus status;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<ProductOption> options = new ArrayList<>();
 
     public Product(Category category, String name, String description, long basePrice, ProductStatus status) {
         this.category = category;
