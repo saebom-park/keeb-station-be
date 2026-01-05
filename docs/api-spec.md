@@ -23,9 +23,10 @@
 
 ### 공통 HTTP Status 규칙
 - `400 Bad Request`  
-  - 요청 값 오류 (금액 불일치, 잘못된 상태 전이 등)
+  - 요청 값 오류
+  - 잘못된 상태 전이
 - `404 Not Found`  
-  - 리소스 없음 (주문, 옵션, 재고 등)
+  - 리소스 없음 (주문, 옵션, 결제, 배송 등)
 - `409 Conflict`  
   - 비즈니스 충돌
     - 중복 결제
@@ -145,7 +146,76 @@
 
 ---
 
-## 4. 주문 상태 요약
+## 4. Shipping API
+
+> 배송은 Order 도메인과 분리된 **Shipping 도메인**에서 관리한다.  
+> 현재 단계에서는 배송 정보 없이 **주문 단위 배송 상태 관리**만 수행한다.
+
+---
+
+### POST /api/orders/{orderId}/shippings
+- 설명: 주문에 대한 배송 생성
+
+#### 처리 흐름
+1. Orders 조회
+2. 배송 존재 여부 확인
+3. Shipping 생성
+4. Shipping 상태 → `READY`
+
+#### Response
+- `200 OK`
+
+#### Error Case
+- `404 Not Found`
+  - 주문 없음
+- `409 Conflict`
+  - 이미 배송이 생성된 주문
+
+---
+
+### POST /api/orders/{orderId}/shippings/ship
+- 설명: 배송 시작 처리
+
+#### 제약 조건
+- `READY` 상태에서만 가능
+
+#### 처리 결과
+- Shipping 상태 → `SHIPPED`
+
+#### Response
+- `200 OK`
+
+#### Error Case
+- `404 Not Found`
+  - 주문/배송 없음
+- `400 Bad Request`
+  - 잘못된 배송 상태
+
+---
+
+### POST /api/orders/{orderId}/shippings/deliver
+- 설명: 배송 완료 처리
+
+#### 제약 조건
+- `SHIPPED` 상태에서만 가능
+
+#### 처리 결과
+- Shipping 상태 → `DELIVERED`
+
+#### Response
+- `200 OK`
+
+#### Error Case
+- `404 Not Found`
+  - 주문/배송 없음
+- `400 Bad Request`
+  - 잘못된 배송 상태
+
+---
+
+## 5. 주문 / 배송 상태 요약
+
+### OrderStatus
 
 | 상태 | 설명 |
 |---|---|
@@ -153,14 +223,25 @@
 | PAID | 결제 완료 |
 | CANCELED | 주문 취소 |
 
-> 배송(Shipping) 관련 상태는 **다음 단계에서 확장 예정**
+---
+
+### ShippingStatus
+
+| 상태 | 설명 |
+|---|---|
+| READY | 배송 생성 완료 |
+| SHIPPED | 배송 시작 |
+| DELIVERED | 배송 완료 |
 
 ---
 
-## 5. 비고
+## 6. 비고
 
 - 결제 API는 `/pay` command-style 대신  
   **리소스 기반 `/payments` 경로**를 사용한다.
-- 주문 상태 변경은 각 도메인의 책임에 따라 분리된다.
-  - Order: 상태 전이 규칙
+- 배송 API는 단수형(`/shipping`)이 아닌  
+  **복수형(`/shippings`) 경로를 사용한다.**
+- 주문, 결제, 배송은 각각의 도메인 책임에 따라 분리된다.
+  - Order: 주문 생성 및 취소
   - Payment: 결제 및 PAID 전이
+  - Shipping: 배송 생성 및 배송 상태 전이

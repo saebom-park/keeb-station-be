@@ -25,6 +25,7 @@
 - `orders (1) ── (N) order_line`
 - `order_line (N) ── (1) product_option`
 - `orders (1) ── (N) payment`
+- `orders (1) ── (1) shippings` (**주문당 배송 1건, UNIQUE(order_id)로 1:1 강제**)
 
 ---
 
@@ -121,7 +122,7 @@
 |---|---|---|---|
 | order_id | BIGINT | PK, Auto Increment | 주문 ID |
 | member_id | BIGINT | FK (가정) | 주문자 ID |
-| status | VARCHAR(20) | NOT NULL | 상태 (`CREATED`, `PAID`, `CANCELED`) |
+| status | VARCHAR(20) | NOT NULL | 상태 (`CREATED`, `PAID`, `SHIPPED`, `CANCELED`) |
 | total_price | BIGINT | NOT NULL | 총 주문 금액 |
 | reg_time | TIMESTAMP | NOT NULL | 생성 시각 |
 | update_time | TIMESTAMP | NOT NULL | 수정 시각 |
@@ -172,6 +173,31 @@
 권장 인덱스:
 - `idx_payment_order_id (order_id)`
 
+권장 규칙:
+- 주문당 `SUCCESS` 상태의 결제는 1건만 허용
+- 이미 결제 완료된 주문에 대한 추가 결제 시도는 예외 처리
+
+---
+
+### 2.8 `shipping` (배송)
+
+> 주문에 대한 배송 상태를 관리한다.  
+> 주문 1건당 배송 정보는 정확히 1건만 생성되며,  
+> `order_id`에 UNIQUE 제약을 두어 1:1 관계를 강제한다.
+
+| 컬럼명 | 타입 | 제약조건 | 설명 |
+|---|---|---|---|
+| shipping_id | BIGINT | PK, Auto Increment | 배송 ID |
+| order_id | BIGINT | FK, UNIQUE (`orders.order_id`) | 주문 ID |
+| status | VARCHAR(20) | NOT NULL | 배송 상태 (`READY`, `SHIPPED`, `DELIVERED`) |
+| reg_time | TIMESTAMP | NOT NULL | 생성 시각 |
+| update_time | TIMESTAMP | NOT NULL | 수정 시각 |
+
+권장 규칙:
+- 배송은 **PAID 상태의 주문에서만 생성 가능**
+- 배송 생성 시 `orders.status`는 `SHIPPED`로 전이
+- 주문이 취소되면 배송은 생성될 수 없다
+
 ---
 
 ## 3. Enum 정의 (문서 기준)
@@ -179,9 +205,10 @@
 - `CategoryName`: `KEYBOARD`, `KEYCAP`, `SWITCH`, `ACCESSORY`
 - `ProductStatus`: `ACTIVE`, `INACTIVE`
 - `ProductOptionStatus`: `AVAILABLE`, `DISABLED`
-- `OrderStatus`: `CREATED`, `PAID`, `CANCELED`
+- `OrderStatus`: `CREATED`, `PAID`, `SHIPPED`, `CANCELED`
 - `PaymentStatus`: `READY`, `SUCCESS`, `FAILED`
 - `PaymentMethod`: `CARD`, `ACCOUNT`
+- `ShippingStatus`: `READY`, `SHIPPED`, `DELIVERED`
 
 ---
 
@@ -204,3 +231,5 @@
 - 2025-12-26: 금액 컬럼 타입을 `BIGINT`로 통일
 - 2025-12-30: Stock에 `@Version` 기반 낙관적 락 적용
 - 2025-12-30: 동시 주문 충돌 시 `OptimisticLockException` 발생을 허용하고 서비스 레벨에서 처리하도록 설계
+- 2026-01-05: 배송(shippings) 도메인 추가 및 주문–배송 1:1 관계 확정
+- 2026-01-05: 결제(payment)는 주문당 다건 이력 허용하되, 성공 결제는 1건만 허용하도록 정책 명시
