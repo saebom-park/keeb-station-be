@@ -4,11 +4,12 @@ import com.saebom.keebstation.domain.product.Product;
 import com.saebom.keebstation.domain.stock.Stock;
 import com.saebom.keebstation.global.common.jpa.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "product_option", indexes = {
         @Index(name = "idx_product_option_product_id", columnList = "product_id")
@@ -43,7 +44,7 @@ public class ProductOption extends BaseTimeEntity {
     @OneToOne(mappedBy = "productOption", fetch = FetchType.LAZY)
     private Stock stock;
 
-    public ProductOption(Product product, String optionSummary, long extraPrice,
+    private ProductOption(Product product, String optionSummary, long extraPrice,
                          ProductOptionStatus status, String sku, boolean isDefault) {
         this.product = product;
         this.optionSummary = optionSummary;
@@ -51,5 +52,19 @@ public class ProductOption extends BaseTimeEntity {
         this.status = status;
         this.sku = sku;
         this.isDefault = isDefault;
+    }
+
+    public static ProductOption create(Product product, String optionSummary, long extraPrice,
+                                       ProductOptionStatus status, String sku, boolean isDefault) {
+        return new ProductOption(product, optionSummary, extraPrice, status, sku, isDefault);
+    }
+
+    // 연관관계 편의 메서드
+    public void attachStock(Stock stock) {
+        if (stock == null) throw new IllegalArgumentException("stock must not be null");
+        if (stock.getProductOption() != this) {
+            throw new IllegalStateException("stock.productOption must be this");
+        }
+        this.stock = stock;
     }
 }

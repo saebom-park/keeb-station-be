@@ -3,11 +3,12 @@ package com.saebom.keebstation.domain.stock;
 import com.saebom.keebstation.domain.option.ProductOption;
 import com.saebom.keebstation.global.common.jpa.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "stock",
         uniqueConstraints = @UniqueConstraint(name = "uk_stock_product_option_id", columnNames = "product_option_id"))
@@ -29,9 +30,18 @@ public class Stock extends BaseTimeEntity {
     @Column(name = "version", nullable = false)
     private long version;
 
-    public Stock(ProductOption productOption, int quantity) {
-        this.productOption = productOption;
+    private Stock(ProductOption productOption, int quantity) {
+        linkProductOption(productOption);
         this.quantity = quantity;
+    }
+
+    public static Stock create(ProductOption productOption, int quantity) {
+        return new Stock(productOption, quantity);
+    }
+
+    private void linkProductOption(ProductOption productOption) {
+        this.productOption = productOption;
+        productOption.attachStock(this);
     }
 
     public void decrease(int amount) {
