@@ -2,8 +2,11 @@ package com.saebom.keebstation.domain.product;
 
 import com.saebom.keebstation.domain.option.ProductOption;
 import com.saebom.keebstation.web.dto.api.product.ProductDetailResponse;
+import com.saebom.keebstation.web.dto.api.product.ProductSummaryResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +47,22 @@ public class ProductQueryServiceImpl implements ProductQueryService {
                 option.getStatus(),
                 option.isDefault(),
                 new ProductDetailResponse.StockResponse(option.getStock().getQuantity())
+        );
+    }
+
+    @Override
+    public Page<ProductSummaryResponse> getProductList(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(this::toSummaryResponse);
+    }
+
+    private ProductSummaryResponse toSummaryResponse(Product product) {
+        return new ProductSummaryResponse(
+                product.getId(),
+                product.getCategory().getId(),
+                product.getName(),
+                product.getBasePrice(),
+                product.getStatus()
         );
     }
 }
