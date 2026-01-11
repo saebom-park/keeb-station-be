@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.saebom'
 version = '0.0.1-SNAPSHOT'
-description = 'keeb-station'
+description = 'keeb-station-be'
 
 java {
     toolchain {
