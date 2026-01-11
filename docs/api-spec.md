@@ -38,13 +38,80 @@
 
 ### GET /api/products
 - 설명: 상품 목록 조회
-- 비고: 구현 예정
+- 비고: 요약 정보(Summary) 기준 조회
+
+#### Query Params (선택)
+| 파라미터 | 설명 |
+|---|---|
+| page | 페이지 번호 (0부터 시작) |
+| size | 페이지 크기 (기본 20) |
+| sort | 정렬 기준 (예: `regTime,desc`) |
+
+#### Response (Page)
+```json
+{
+  "content": [
+    {
+      "productId": 1,
+      "name": "Test Keyboard",
+      "basePrice": 100000,
+      "status": "ACTIVE"
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 20
+  },
+  "totalElements": 1,
+  "totalPages": 1,
+  "last": true
+}
+```
 
 ---
 
 ### GET /api/products/{id}
 - 설명: 상품 상세 조회
-- 비고: 구현 예정
+- 비고: 옵션 + 재고 포함 상세 조회
+
+#### Path Variable
+| 이름 | 설명 |
+|---|---|
+| productId | 상품 ID |
+
+#### Response (Page)
+```json
+{
+  "productId": 1,
+  "categoryId": 1,
+  "name": "Test Keyboard",
+  "description": "Test Product",
+  "basePrice": 100000,
+  "status": "ACTIVE",
+  "options": [
+    {
+      "productOptionId": 1,
+      "optionSummary": "Black Switch",
+      "extraPrice": 0,
+      "status": "AVAILABLE",
+      "isDefault": true,
+      "stock": {
+        "quantity": 10
+      }
+    },
+    {
+      "productOptionId": 2,
+      "optionSummary": "Red Switch",
+      "extraPrice": 5000,
+      "status": "AVAILABLE",
+      "isDefault": false,
+      "stock": {
+        "quantity": 5
+      }
+    }
+  ]
+}
+```
 
 ---
 
