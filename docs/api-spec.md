@@ -39,10 +39,12 @@
 ### GET /api/products
 - 설명: 상품 목록 조회
 - 비고: 요약 정보(Summary) 기준 조회
+  - `categoryId`가 전달되면 해당 카테고리 상품만 조회한다.
 
 #### Query Params (선택)
 | 파라미터 | 설명 |
 |---|---|
+| categoryId | 카테고리 ID (필터링) |
 | page | 페이지 번호 (0부터 시작) |
 | size | 페이지 크기 (기본 20) |
 | sort | 정렬 기준 (예: `regTime,desc`) |
@@ -53,6 +55,7 @@
   "content": [
     {
       "productId": 1,
+      "categoryId": 1,
       "name": "Test Keyboard",
       "basePrice": 100000,
       "status": "ACTIVE"
