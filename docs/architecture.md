@@ -15,10 +15,11 @@ keeb-station 서비스의 전체 구조와 책임 분리를 설명한다.
 
 keeb-station은 Layered Architecture를 기반으로 구성한다.
 
-- Presentation Layer (web)
+- Presentation Layer (web): Controller, 요청/응답 DTO
 - Application Layer (service): 유스케이스 조합 및 트랜잭션 경계
 - Domain Layer (entity): 상태 전이 및 비즈니스 규칙 보유
-- Infrastructure Layer (repository, external)
+- Persistence Layer (repository): DB 접근(JPA Repository 등)
+- External Integration: 외부 연동(향후 PG/배송사 연동 등) 확장 영역
 
 ---
 
@@ -46,6 +47,8 @@ com.saebom.keebstation
  └─ KeebStationApplication
 ```
 
+- 현재 단계에서는 서비스 구현체를 도메인 단위로 `domain` 하위에 배치하며, Controller는 web 하위에서 얇게 유지한다.
+
 ---
 
 ## 핵심 설계 포인트
@@ -59,6 +62,7 @@ com.saebom.keebstation
 - PaymentService를 통해서만 PAID 상태로 전이 가능
 - 배송(Shipping)은 주문(Order)과 1:1 관계의 독립 도메인
 - 주문이 PAID 상태일 때만 배송 생성이 가능하며, 배송 생성 시 Order는 SHIPPED 상태로 전이
+  - SHIPPED는 '발송 완료'가 아니라 배송 단계 진입(배송 생성 완료)을 의미한다.
 
 ---
 
@@ -66,7 +70,7 @@ com.saebom.keebstation
 
 - Controller → OrderService (@Transactional, 트랜잭션 시작)
 - ProductOption 조회
-- Stock 조회 및 quantity 감소
+- Stock 조회 및 quantity 감소 (@Version 기반 낙관적 락)
 - Order / OrderLine 생성
 - 총 금액 확정
 - 실패 시 전체 롤백 (재고 차감 포함)

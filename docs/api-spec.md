@@ -82,7 +82,7 @@
 |---|---|
 | productId | 상품 ID |
 
-#### Response (Page)
+#### Response
 ```json
 {
   "productId": 1,
@@ -231,7 +231,8 @@
 1. Orders 조회
 2. 배송 존재 여부 확인
 3. Shipping 생성
-4. Shipping 상태 → `READY`
+4. Shipping 상태 → READY
+5. Orders 상태 → SHIPPED
 
 #### Response
 - `200 OK`
@@ -292,7 +293,7 @@
 |---|---|
 | CREATED | 주문 생성 완료 |
 | PAID | 결제 완료 |
-| SHIPPED | 배송 생성 완료 상태 |
+| SHIPPED | 배송 생성 및 배송 단계 진입 |
 | CANCELED | 주문 취소 |
 
 ---
