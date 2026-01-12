@@ -120,12 +120,13 @@
 
 ## 2. Order API
 
-### POST /api/orders?memberId={memberId}
+### POST /api/orders
 - 설명: 주문 생성 (옵션 기준)
 
 #### Request
 ```json
 {
+  "memberId": 1,
   "items": [
     {
       "productOptionId": 1,

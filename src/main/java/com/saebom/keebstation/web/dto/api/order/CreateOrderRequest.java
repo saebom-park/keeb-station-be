@@ -10,5 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateOrderRequest {
 
+    private Long memberId;
+
     private List<CreateOrderItemRequest> items = new ArrayList<>();
 }

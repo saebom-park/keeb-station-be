@@ -35,7 +35,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public CreateOrderResponse createOrder(Long memberId, CreateOrderRequest request) {
+    public CreateOrderResponse createOrder(CreateOrderRequest request) {
+
+        Long memberId = request.getMemberId();
 
         if (memberId == null) throw new IllegalArgumentException("memberId는 필수입니다.");
         if (request == null || request.getItems() == null || request.getItems().isEmpty()) {

@@ -5,6 +5,6 @@ import com.saebom.keebstation.web.dto.api.order.CreateOrderResponse;
 
 public interface OrderService {
 
-    CreateOrderResponse createOrder(Long memberId, CreateOrderRequest request);
+    CreateOrderResponse createOrder(CreateOrderRequest request);
     void cancelOrder(Long orderId);
 }
