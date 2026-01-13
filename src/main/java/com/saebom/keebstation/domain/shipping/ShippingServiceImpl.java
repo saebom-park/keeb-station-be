@@ -30,10 +30,10 @@ public class ShippingServiceImpl implements ShippingService {
         }
 
         Shipping shipping = Shipping.ready(order);
-        shippingRepository.save(shipping);
 
         // 주문 상태 전이
         order.startShipping();
+        shippingRepository.save(shipping);
     }
 
     @Override
