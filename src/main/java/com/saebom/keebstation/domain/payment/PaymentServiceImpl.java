@@ -40,10 +40,10 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         Payment payment = Payment.ready(order, amount, method);
-        paymentRepository.save(payment);
 
         // 내부 시뮬레이션: 지금은 무조건 성공
         payment.success();
+        paymentRepository.save(payment);
         order.markPaid();
     }
 }
