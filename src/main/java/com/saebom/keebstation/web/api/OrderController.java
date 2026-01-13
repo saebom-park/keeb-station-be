@@ -4,12 +4,7 @@ import com.saebom.keebstation.domain.order.OrderQueryService;
 import com.saebom.keebstation.domain.order.OrderService;
 import com.saebom.keebstation.web.dto.api.order.CreateOrderRequest;
 import com.saebom.keebstation.web.dto.api.order.CreateOrderResponse;
-import com.saebom.keebstation.web.dto.api.order.OrderDetailResponse;
-import com.saebom.keebstation.web.dto.api.order.OrderSummaryResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,17 +26,5 @@ public class OrderController {
     public ResponseEntity<Void> cancelOrder(@PathVariable("orderId") Long orderId) {
         orderService.cancelOrder(orderId);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping
-    public Page<OrderSummaryResponse> getOrders(
-            @PageableDefault(size = 20) Pageable pageable
-    ) {
-        return orderQueryService.getOrderList(pageable);
-    }
-
-    @GetMapping("/{orderId}")
-    public OrderDetailResponse getOrderDetail(@PathVariable Long orderId) {
-        return orderQueryService.getOrderDetail(orderId);
     }
 }
